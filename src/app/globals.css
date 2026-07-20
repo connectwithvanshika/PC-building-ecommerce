@@ -106,7 +106,11 @@
     -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight;
+    @apply font-heading font-black tracking-tighter;
+    letter-spacing: -0.04em;
+  }
+  h1 {
+    letter-spacing: -0.05em;
   }
   body {
     @apply bg-background text-foreground;

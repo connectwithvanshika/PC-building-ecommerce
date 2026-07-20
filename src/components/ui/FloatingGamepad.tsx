@@ -1,58 +1,182 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 export function FloatingGamepad() {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll-based parallax tracking
   const { scrollY } = useScroll();
+  
+  // Transform scroll position into a complex zig-zag path and rotation
+  const yPath = useTransform(scrollY, [0, 1000, 2000, 3000, 4000], [0, 400, 800, 1200, 1600]);
+  const xPath = useTransform(scrollY, [0, 1000, 2000, 3000, 4000], [0, -200, 50, -150, 0]);
+  const rotatePath = useTransform(scrollY, [0, 1000, 2000, 3000, 4000], [-5, 15, -10, 20, -5]);
+  const scalePath = useTransform(scrollY, [0, 500, 2000], [1, 1.1, 1]);
+  
+  // Apply spring physics for buttery smooth scrolling transitions
+  const smoothY = useSpring(yPath, { stiffness: 40, damping: 20 });
+  const smoothX = useSpring(xPath, { stiffness: 40, damping: 20 });
+  const smoothRotate = useSpring(rotatePath, { stiffness: 40, damping: 20 });
+  const smoothScale = useSpring(scalePath, { stiffness: 100, damping: 30 });
 
-  // As user scrolls 0→2000px, gamepad drifts right, rotates, fades
-  const x = useTransform(scrollY, [0, 2000], [0, 180]);
-  const y = useTransform(scrollY, [0, 2000], [0, -120]);
-  const rotate = useTransform(scrollY, [0, 2000], [-8, 40]);
-  const opacity = useTransform(scrollY, [0, 400, 1400, 2000], [0.18, 0.28, 0.18, 0]);
+  // Mouse-based 3D Parallax effect
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      // Normalize mouse coordinates from -1 to 1
+      const x = (e.clientX / innerWidth) * 2 - 1;
+      const y = (e.clientY / innerHeight) * 2 - 1;
+      setMousePosition({ x, y });
+    };
+    
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
+  // Multi-layered parallax calculation based on mouse
+  const mouseXBase = mousePosition.x * 20;
+  const mouseYBase = mousePosition.y * 20;
+  
   return (
-    <div ref={ref} className="fixed pointer-events-none z-0 top-1/3 right-8 hidden lg:block" aria-hidden="true">
+    <div 
+      className="fixed inset-0 pointer-events-none overflow-visible flex items-start justify-end pr-[10%] pt-[20vh]"
+      style={{ zIndex: 0 }}
+      aria-hidden="true"
+    >
       <motion.div
-        style={{ x, y, rotate, opacity }}
-        className="float-anim"
+        ref={containerRef}
+        style={{
+          y: smoothY,
+          x: smoothX,
+          rotate: smoothRotate,
+          scale: smoothScale,
+          transformPerspective: 1200,
+          rotateX: mousePosition.y * -15,
+          rotateY: mousePosition.x * 15,
+        }}
+        className="relative w-[500px] h-[350px] transition-transform duration-200 ease-out"
       >
-        {/* Gamepad SVG */}
+        {/* Deep ambient glow layer */}
+        <div className="absolute inset-0 bg-primary/40 rounded-full blur-[80px] scale-90 mix-blend-screen opacity-70 animate-pulse" />
+        <div className="absolute inset-0 bg-indigo-500/30 rounded-full blur-[100px] scale-110 mix-blend-screen opacity-50" />
+
         <svg
-          width="120"
-          height="80"
-          viewBox="0 0 120 80"
+          viewBox="0 0 400 280"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="drop-shadow-lg"
+          className="w-full h-full drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)]"
         >
-          {/* Body */}
-          <path
-            d="M20 20 Q10 20 8 35 L5 60 Q4 72 15 72 Q25 72 30 62 L35 55 H85 L90 62 Q95 72 105 72 Q116 72 115 60 L112 35 Q110 20 100 20 Z"
-            fill="oklch(0.55 0.25 270 / 80%)"
-            stroke="oklch(0.65 0.27 270)"
-            strokeWidth="1.5"
-          />
-          {/* Left D-pad */}
-          <rect x="22" y="36" width="6" height="16" rx="2" fill="oklch(0.75 0.20 270 / 90%)" />
-          <rect x="16" y="42" width="18" height="6" rx="2" fill="oklch(0.75 0.20 270 / 90%)" />
-          {/* Right buttons */}
-          <circle cx="90" cy="38" r="4" fill="oklch(0.70 0.18 230 / 90%)" />
-          <circle cx="82" cy="44" r="4" fill="oklch(0.72 0.22 290 / 90%)" />
-          <circle cx="98" cy="44" r="4" fill="oklch(0.72 0.22 250 / 90%)" />
-          <circle cx="90" cy="50" r="4" fill="oklch(0.68 0.20 210 / 90%)" />
-          {/* Center logo area */}
-          <rect x="52" y="36" width="16" height="10" rx="5" fill="oklch(0.65 0.27 270 / 60%)" />
-          {/* Joysticks */}
-          <circle cx="38" cy="52" r="8" fill="oklch(0.20 0.05 270 / 90%)" stroke="oklch(0.60 0.22 270)" strokeWidth="1.5" />
-          <circle cx="74" cy="52" r="8" fill="oklch(0.20 0.05 270 / 90%)" stroke="oklch(0.60 0.22 270)" strokeWidth="1.5" />
-          {/* Shoulder buttons */}
-          <rect x="18" y="18" width="22" height="8" rx="4" fill="oklch(0.50 0.22 270 / 80%)" />
-          <rect x="80" y="18" width="22" height="8" rx="4" fill="oklch(0.50 0.22 270 / 80%)" />
-          {/* Glow effect */}
-          <ellipse cx="60" cy="65" rx="30" ry="4" fill="oklch(0.65 0.27 270 / 20%)" />
+          <defs>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="400" y2="280" gradientUnits="userSpaceOnUse">
+              <stop stopColor="oklch(0.20 0.05 270)" />
+              <stop offset="1" stopColor="oklch(0.12 0.03 270)" />
+            </linearGradient>
+            <linearGradient id="accentGrad" x1="0" y1="0" x2="400" y2="280" gradientUnits="userSpaceOnUse">
+              <stop stopColor="oklch(0.55 0.25 270)" />
+              <stop offset="1" stopColor="oklch(0.40 0.15 270)" />
+            </linearGradient>
+            <filter id="insetShadow">
+              <feOffset dx="0" dy="8" />
+              <feGaussianBlur stdDeviation="6" result="offset-blur" />
+              <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+              <feFlood floodColor="black" floodOpacity="0.7" result="color" />
+              <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+              <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+            </filter>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* BASE LAYER: Main Chassis */}
+          <g style={{ transform: `translate(${mouseXBase * 0.1}px, ${mouseYBase * 0.1}px)` }}>
+            <path
+              d="M70 80 Q30 80 20 130 L10 210 Q5 250 40 250 Q75 250 90 210 L100 180 H300 L310 210 Q325 250 360 250 Q395 250 390 210 L380 130 Q370 80 330 80 Z"
+              fill="url(#bodyGrad)"
+              stroke="oklch(0.35 0.10 270)"
+              strokeWidth="3"
+              filter="url(#insetShadow)"
+            />
+            
+            {/* Grip Textures */}
+            <path d="M40 220 Q20 200 30 160" stroke="oklch(0.15 0.02 270)" strokeWidth="6" strokeLinecap="round" opacity="0.5" />
+            <path d="M55 230 Q35 210 45 170" stroke="oklch(0.15 0.02 270)" strokeWidth="6" strokeLinecap="round" opacity="0.5" />
+            <path d="M360 220 Q380 200 370 160" stroke="oklch(0.15 0.02 270)" strokeWidth="6" strokeLinecap="round" opacity="0.5" />
+            <path d="M345 230 Q365 210 355 170" stroke="oklch(0.15 0.02 270)" strokeWidth="6" strokeLinecap="round" opacity="0.5" />
+          </g>
+
+          {/* MID LAYER: Buttons, D-Pad, Center Panel */}
+          <g style={{ transform: `translate(${mouseXBase * 0.3}px, ${mouseYBase * 0.3}px)` }}>
+            {/* Center Panel */}
+            <rect x="160" y="100" width="80" height="100" rx="15" fill="oklch(0.10 0.02 270)" stroke="oklch(0.25 0.05 270)" strokeWidth="2" filter="url(#insetShadow)" />
+            <ellipse cx="200" cy="120" rx="20" ry="6" fill="url(#accentGrad)" opacity="0.8" filter="url(#glow)" />
+            
+            {/* Menu Buttons */}
+            <circle cx="175" cy="150" r="6" fill="oklch(0.30 0.10 270)" />
+            <circle cx="225" cy="150" r="6" fill="oklch(0.30 0.10 270)" />
+
+            {/* D-Pad (Left) */}
+            <g transform="translate(80, 130)">
+              <rect x="-10" y="-30" width="20" height="60" rx="4" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
+              <rect x="-30" y="-10" width="60" height="20" rx="4" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
+              {/* D-pad arrows */}
+              <path d="M0 -22 L-4 -16 H4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
+              <path d="M0 22 L-4 16 H4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
+              <path d="M-22 0 L-16 -4 V4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
+              <path d="M22 0 L16 -4 V4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
+            </g>
+
+            {/* Action Buttons (Right) */}
+            <g transform="translate(320, 130)">
+              {/* Top (Y) */}
+              <circle cx="0" cy="-25" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
+              <text x="0" y="-20" textAnchor="middle" fill="oklch(0.85 0.15 250)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">Y</text>
+              {/* Bottom (A) */}
+              <circle cx="0" cy="25" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
+              <text x="0" y="30" textAnchor="middle" fill="oklch(0.75 0.25 150)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">A</text>
+              {/* Left (X) */}
+              <circle cx="-25" cy="0" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
+              <text x="-25" y="5" textAnchor="middle" fill="oklch(0.60 0.25 250)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">X</text>
+              {/* Right (B) */}
+              <circle cx="25" cy="0" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
+              <text x="25" y="5" textAnchor="middle" fill="oklch(0.65 0.25 20)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">B</text>
+            </g>
+          </g>
+
+          {/* TOP LAYER: 3D Joysticks */}
+          <g style={{ transform: `translate(${mouseXBase * 0.7}px, ${mouseYBase * 0.7}px)` }}>
+            {/* Left Joystick */}
+            <g transform="translate(130, 200)">
+              <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" filter="url(#insetShadow)" />
+              <circle cx="-4" cy="-4" r="24" fill="oklch(0.20 0.05 270)" />
+              <circle cx="-8" cy="-8" r="15" fill="oklch(0.25 0.05 270)" />
+              {/* Highlight */}
+              <path d="M-15 -15 A 12 12 0 0 1 -5 -20" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3" fill="none" />
+            </g>
+            
+            {/* Right Joystick */}
+            <g transform="translate(270, 200)">
+              <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" filter="url(#insetShadow)" />
+              <circle cx="-4" cy="-4" r="24" fill="oklch(0.20 0.05 270)" />
+              <circle cx="-8" cy="-8" r="15" fill="oklch(0.25 0.05 270)" />
+              {/* Highlight */}
+              <path d="M-15 -15 A 12 12 0 0 1 -5 -20" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3" fill="none" />
+            </g>
+          </g>
+
+          {/* TRIGGERS LAYER (Behind body visually, but moved with base) */}
+          <g style={{ transform: `translate(${mouseXBase * 0.05}px, ${mouseYBase * 0.05}px)` }}>
+            <path d="M60 80 Q70 50 110 50 H130 V80 Z" fill="url(#accentGrad)" opacity="0.9" />
+            <path d="M340 80 Q330 50 290 50 H270 V80 Z" fill="url(#accentGrad)" opacity="0.9" />
+          </g>
         </svg>
       </motion.div>
     </div>

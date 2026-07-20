@@ -75,12 +75,6 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              href="/gallery"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-muted/50 transition-colors"
-            >
-              Gallery
-            </Link>
-            <Link
               href="/category/all"
               className="px-3 py-2 text-sm font-medium text-primary hover:text-primary/80 rounded-md hover:bg-primary/10 transition-colors"
             >
@@ -145,9 +139,6 @@ export function Navbar() {
                       {cat.name}
                     </Link>
                   ))}
-                  <Link href="/gallery" className="px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
-                    Gallery
-                  </Link>
                   <div className="border-t my-4" />
                   <Link href="/account" className="px-4 py-3 font-medium hover:bg-muted rounded-lg transition-colors">My Account</Link>
                   <Link href="/wishlist" className="px-4 py-3 font-medium hover:bg-muted rounded-lg transition-colors">Wishlist</Link>
