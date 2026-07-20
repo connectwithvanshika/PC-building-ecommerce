@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large local video assets — keep out of git
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+# Also exclude public video copies
+/public/*.mp4
+/public/*.mov
+/public/*.webm

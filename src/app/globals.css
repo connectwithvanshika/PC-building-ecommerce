@@ -48,49 +48,51 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ── LIGHT THEME (Default) ─── Purple/Indigo palette */
 :root {
   --background: oklch(0.99 0 0);
-  --foreground: oklch(0.13 0 0);
+  --foreground: oklch(0.10 0.02 270);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0 0);
+  --card-foreground: oklch(0.10 0.02 270);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0 0);
-  /* Pinkish/Purplish Primary */
-  --primary: oklch(0.60 0.25 330);
+  --popover-foreground: oklch(0.10 0.02 270);
+  /* Vivid Purple Primary */
+  --primary: oklch(0.55 0.25 270);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0.05 310);
-  --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.95 0.05 310);
-  --accent-foreground: oklch(0.25 0 0);
+  --secondary: oklch(0.94 0.05 250);
+  --secondary-foreground: oklch(0.20 0.05 270);
+  --muted: oklch(0.96 0.01 250);
+  --muted-foreground: oklch(0.50 0.02 270);
+  --accent: oklch(0.93 0.06 230);
+  --accent-foreground: oklch(0.20 0.05 270);
   --destructive: oklch(0.57 0.25 27);
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.60 0.25 330);
+  --border: oklch(0.90 0.02 270);
+  --input: oklch(0.90 0.02 270);
+  --ring: oklch(0.55 0.25 270);
   --radius: 0.5rem;
 }
 
+/* ── DARK THEME ─── Deep space purple/indigo */
 .dark {
-  --background: oklch(0.08 0.02 330);
+  --background: oklch(0.07 0.03 270);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.12 0.02 330);
+  --card: oklch(0.11 0.03 270);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.12 0.02 330);
+  --popover: oklch(0.11 0.03 270);
   --popover-foreground: oklch(0.985 0 0);
-  /* Pinkish/Purplish Primary */
-  --primary: oklch(0.65 0.25 330);
+  /* Vivid Purple Primary */
+  --primary: oklch(0.65 0.27 270);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.15 0.03 330);
+  --secondary: oklch(0.15 0.04 260);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.15 0.03 330);
-  --muted-foreground: oklch(0.75 0.05 330);
-  --accent: oklch(0.18 0.04 330);
+  --muted: oklch(0.15 0.04 260);
+  --muted-foreground: oklch(0.72 0.06 270);
+  --accent: oklch(0.18 0.05 250);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.6 0.15 22);
-  --border: oklch(0.20 0.03 330);
-  --input: oklch(0.20 0.03 330);
-  --ring: oklch(0.65 0.25 330);
+  --border: oklch(0.20 0.04 270);
+  --input: oklch(0.20 0.04 270);
+  --ring: oklch(0.65 0.27 270);
 }
 
 @layer base {
@@ -110,44 +112,92 @@
     @apply bg-background text-foreground;
   }
   ::selection {
-    background-color: oklch(0.65 0.25 330 / 30%);
+    background-color: oklch(0.55 0.25 270 / 25%);
     color: inherit;
   }
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.40 0.10 330);
+    background: oklch(0.45 0.15 270);
     border-radius: 999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.65 0.25 330);
+    background: oklch(0.65 0.27 270);
   }
 }
 
 @layer utilities {
+  /* Subtle dashed grid — works in both light and dark */
   .bg-dashed-grid {
-    background-image: linear-gradient(45deg, oklch(0.65 0.25 330 / 20%) 25%, transparent 25%, transparent 50%, oklch(0.65 0.25 330 / 20%) 50%, oklch(0.65 0.25 330 / 20%) 75%, transparent 75%, transparent);
-    background-size: 20px 20px;
-    background-position: 0 0;
+    background-image:
+      linear-gradient(oklch(0.55 0.25 270 / 8%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.55 0.25 270 / 8%) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
+
+  /* Purple→Blue gradient text */
   .gradient-text {
-    background: linear-gradient(135deg, oklch(0.70 0.15 290), oklch(0.65 0.25 330));
+    background: linear-gradient(135deg, oklch(0.60 0.28 270), oklch(0.60 0.22 230));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Indigo glow */
   .glow {
-    box-shadow: 0 0 30px oklch(0.65 0.25 330 / 25%);
+    box-shadow: 0 0 35px oklch(0.55 0.25 270 / 30%), 0 0 80px oklch(0.55 0.25 270 / 10%);
   }
+
+  /* Glass card */
   .glass {
-    background: oklch(0.12 0.02 330 / 70%);
+    background: oklch(1 0 0 / 60%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    border: 1px solid oklch(0.55 0.25 270 / 15%);
+  }
+  .dark .glass {
+    background: oklch(0.12 0.03 270 / 70%);
     border: 1px solid oklch(1 0 0 / 8%);
+  }
+
+  /* 3D card tilt helpers */
+  .perspective-card {
+    perspective: 800px;
+    transform-style: preserve-3d;
+  }
+  .card-3d {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+  }
+  .card-3d:hover {
+    transform: rotateY(-4deg) rotateX(4deg) scale(1.02);
+    box-shadow: 8px 16px 40px oklch(0.55 0.25 270 / 25%);
+  }
+
+  /* Floating animation for gamepad/stars */
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-18px); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  @keyframes falling-star {
+    0% { transform: translateY(-40px) translateX(0px) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.7; }
+    100% { transform: translateY(110vh) translateX(40px) rotate(360deg); opacity: 0; }
+  }
+  .float-anim {
+    animation: floatY 3.5s ease-in-out infinite;
+  }
+  .star-fall {
+    animation: falling-star linear infinite;
   }
 }
