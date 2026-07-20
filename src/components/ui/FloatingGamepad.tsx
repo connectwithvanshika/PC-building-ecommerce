@@ -6,28 +6,57 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 export function FloatingGamepad() {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Scroll-based parallax tracking
-  const { scrollY } = useScroll();
+  // Track global scroll progress (0 to 1)
+  const { scrollYProgress } = useScroll();
   
-  // Transform scroll position into a complex zig-zag path and rotation
-  const yPath = useTransform(scrollY, [0, 1000, 2000, 3000, 4000], [0, 400, 800, 1200, 1600]);
-  const xPath = useTransform(scrollY, [0, 1000, 2000, 3000, 4000], [0, -200, 50, -150, 0]);
-  const rotatePath = useTransform(scrollY, [0, 1000, 2000, 3000, 4000], [-5, 15, -10, 20, -5]);
-  const scalePath = useTransform(scrollY, [0, 500, 2000], [1, 1.1, 1]);
+  // ── CINEMATIC JOURNEY (Viewport-relative) ──
+  // Container is perfectly centered. We move it using vw/vh.
+  const xPath = useTransform(
+    scrollYProgress, 
+    [0, 0.15, 0.35, 0.55, 0.75, 0.92, 1], 
+    ["30vw", "-35vw", "25vw", "-25vw", "30vw", "0vw", "0vw"]
+  );
   
-  // Apply spring physics for buttery smooth scrolling transitions
-  const smoothY = useSpring(yPath, { stiffness: 40, damping: 20 });
-  const smoothX = useSpring(xPath, { stiffness: 40, damping: 20 });
-  const smoothRotate = useSpring(rotatePath, { stiffness: 40, damping: 20 });
-  const smoothScale = useSpring(scalePath, { stiffness: 100, damping: 30 });
+  const yPath = useTransform(
+    scrollYProgress, 
+    [0, 0.15, 0.35, 0.55, 0.75, 0.92, 1], 
+    ["-25vh", "10vh", "30vh", "-30vh", "5vh", "50vh", "0vh"]
+  );
 
-  // Mouse-based 3D Parallax effect
+  // Rotate smoothly as it floats, then "roll in" aggressively at the end, settling to 0.
+  const rotatePath = useTransform(
+    scrollYProgress,
+    [0, 0.15, 0.35, 0.55, 0.75, 0.92, 1],
+    [-15, 25, -10, 30, -15, -180, 0]
+  );
+
+  // Scale down when flying around, then MASSIVE scale up at the footer.
+  const scalePath = useTransform(
+    scrollYProgress,
+    [0, 0.15, 0.35, 0.55, 0.75, 0.92, 1],
+    [0.7, 0.5, 0.8, 0.6, 0.7, 0.3, 1.4]
+  );
+
+  // Z-Index: Stays behind content (z-0) until the footer, then jumps to foreground (z-50)
+  const zIndexPath = useTransform(
+    scrollYProgress,
+    [0, 0.95, 0.96, 1],
+    [0, 0, 50, 50]
+  );
+  
+  // Apply spring physics for buttery smooth transitions
+  const smoothY = useSpring(yPath, { stiffness: 30, damping: 20 });
+  const smoothX = useSpring(xPath, { stiffness: 30, damping: 20 });
+  const smoothRotate = useSpring(rotatePath, { stiffness: 40, damping: 25 });
+  const smoothScale = useSpring(scalePath, { stiffness: 40, damping: 20 });
+  const smoothZIndex = useSpring(zIndexPath, { stiffness: 1000, damping: 100 }); // Fast jump
+
+  // Mouse-based 3D Parallax effect (idle breathing)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
-      // Normalize mouse coordinates from -1 to 1
       const x = (e.clientX / innerWidth) * 2 - 1;
       const y = (e.clientY / innerHeight) * 2 - 1;
       setMousePosition({ x, y });
@@ -37,14 +66,13 @@ export function FloatingGamepad() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Multi-layered parallax calculation based on mouse
   const mouseXBase = mousePosition.x * 20;
   const mouseYBase = mousePosition.y * 20;
   
   return (
-    <div 
-      className="fixed inset-0 pointer-events-none overflow-visible flex items-start justify-end pr-[10%] pt-[20vh]"
-      style={{ zIndex: 0 }}
+    <motion.div 
+      className="fixed inset-0 pointer-events-none overflow-visible flex items-center justify-center"
+      style={{ zIndex: smoothZIndex }}
       aria-hidden="true"
     >
       <motion.div
@@ -60,15 +88,21 @@ export function FloatingGamepad() {
         }}
         className="relative w-[500px] h-[350px] transition-transform duration-200 ease-out"
       >
-        {/* Deep ambient glow layer */}
-        <div className="absolute inset-0 bg-primary/40 rounded-full blur-[80px] scale-90 mix-blend-screen opacity-70 animate-pulse" />
-        <div className="absolute inset-0 bg-indigo-500/30 rounded-full blur-[100px] scale-110 mix-blend-screen opacity-50" />
+        {/* Dynamic glow that gets intensely brighter at the footer */}
+        <motion.div 
+          style={{ opacity: useTransform(scrollYProgress, [0, 0.9, 1], [0.5, 0.5, 1]) }}
+          className="absolute inset-0 bg-primary/40 rounded-full blur-[80px] scale-90 mix-blend-screen animate-pulse" 
+        />
+        <motion.div 
+          style={{ opacity: useTransform(scrollYProgress, [0, 0.9, 1], [0.3, 0.3, 0.8]) }}
+          className="absolute inset-0 bg-indigo-500/50 rounded-full blur-[100px] scale-110 mix-blend-screen" 
+        />
 
         <svg
           viewBox="0 0 400 280"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)]"
+          className="w-full h-full drop-shadow-[0_40px_80px_rgba(0,0,0,0.7)]"
         >
           <defs>
             <linearGradient id="bodyGrad" x1="0" y1="0" x2="400" y2="280" gradientUnits="userSpaceOnUse">
@@ -105,7 +139,6 @@ export function FloatingGamepad() {
               strokeWidth="3"
               filter="url(#insetShadow)"
             />
-            
             {/* Grip Textures */}
             <path d="M40 220 Q20 200 30 160" stroke="oklch(0.15 0.02 270)" strokeWidth="6" strokeLinecap="round" opacity="0.5" />
             <path d="M55 230 Q35 210 45 170" stroke="oklch(0.15 0.02 270)" strokeWidth="6" strokeLinecap="round" opacity="0.5" />
@@ -123,29 +156,24 @@ export function FloatingGamepad() {
             <circle cx="175" cy="150" r="6" fill="oklch(0.30 0.10 270)" />
             <circle cx="225" cy="150" r="6" fill="oklch(0.30 0.10 270)" />
 
-            {/* D-Pad (Left) */}
+            {/* D-Pad */}
             <g transform="translate(80, 130)">
               <rect x="-10" y="-30" width="20" height="60" rx="4" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
               <rect x="-30" y="-10" width="60" height="20" rx="4" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
-              {/* D-pad arrows */}
               <path d="M0 -22 L-4 -16 H4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
               <path d="M0 22 L-4 16 H4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
               <path d="M-22 0 L-16 -4 V4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
               <path d="M22 0 L16 -4 V4 Z" fill="oklch(0.55 0.25 270)" opacity="0.7" />
             </g>
 
-            {/* Action Buttons (Right) */}
+            {/* Action Buttons */}
             <g transform="translate(320, 130)">
-              {/* Top (Y) */}
               <circle cx="0" cy="-25" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
               <text x="0" y="-20" textAnchor="middle" fill="oklch(0.85 0.15 250)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">Y</text>
-              {/* Bottom (A) */}
               <circle cx="0" cy="25" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
               <text x="0" y="30" textAnchor="middle" fill="oklch(0.75 0.25 150)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">A</text>
-              {/* Left (X) */}
               <circle cx="-25" cy="0" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
               <text x="-25" y="5" textAnchor="middle" fill="oklch(0.60 0.25 250)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">X</text>
-              {/* Right (B) */}
               <circle cx="25" cy="0" r="12" fill="oklch(0.15 0.03 270)" filter="url(#insetShadow)" />
               <text x="25" y="5" textAnchor="middle" fill="oklch(0.65 0.25 20)" fontSize="14" fontWeight="bold" fontFamily="sans-serif">B</text>
             </g>
@@ -153,32 +181,27 @@ export function FloatingGamepad() {
 
           {/* TOP LAYER: 3D Joysticks */}
           <g style={{ transform: `translate(${mouseXBase * 0.7}px, ${mouseYBase * 0.7}px)` }}>
-            {/* Left Joystick */}
             <g transform="translate(130, 200)">
               <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" filter="url(#insetShadow)" />
               <circle cx="-4" cy="-4" r="24" fill="oklch(0.20 0.05 270)" />
               <circle cx="-8" cy="-8" r="15" fill="oklch(0.25 0.05 270)" />
-              {/* Highlight */}
               <path d="M-15 -15 A 12 12 0 0 1 -5 -20" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3" fill="none" />
             </g>
-            
-            {/* Right Joystick */}
             <g transform="translate(270, 200)">
               <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" filter="url(#insetShadow)" />
               <circle cx="-4" cy="-4" r="24" fill="oklch(0.20 0.05 270)" />
               <circle cx="-8" cy="-8" r="15" fill="oklch(0.25 0.05 270)" />
-              {/* Highlight */}
               <path d="M-15 -15 A 12 12 0 0 1 -5 -20" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3" fill="none" />
             </g>
           </g>
 
-          {/* TRIGGERS LAYER (Behind body visually, but moved with base) */}
+          {/* TRIGGERS LAYER */}
           <g style={{ transform: `translate(${mouseXBase * 0.05}px, ${mouseYBase * 0.05}px)` }}>
             <path d="M60 80 Q70 50 110 50 H130 V80 Z" fill="url(#accentGrad)" opacity="0.9" />
             <path d="M340 80 Q330 50 290 50 H270 V80 Z" fill="url(#accentGrad)" opacity="0.9" />
           </g>
         </svg>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

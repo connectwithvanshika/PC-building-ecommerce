@@ -97,7 +97,7 @@ export default function Home() {
             </Badge>
           </motion.div>
 
-          <motion.h1 variants={fadeUp} className="text-7xl md:text-9xl font-black mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
+          <motion.h1 variants={fadeUp} className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
             BUILD YOUR <br/>
             <span className="gradient-text glow text-transparent bg-clip-text">ULTIMATE</span> <br/>
             MACHINE
@@ -126,7 +126,7 @@ export default function Home() {
             className="flex items-end justify-between mb-16"
           >
             <motion.div variants={fadeUp}>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter drop-shadow-lg">FEATURED <span className="gradient-text">GEAR</span></h2>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter drop-shadow-lg">FEATURED <span className="gradient-text">GEAR</span></h2>
               <p className="text-muted-foreground mt-4 font-sans text-xl font-light">Handpicked components for maximum performance.</p>
             </motion.div>
             <motion.div variants={fadeUp}>
@@ -156,10 +156,10 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }}
-              className="lg:w-1/2"
+              className="lg:w-[40%]"
             >
               <Badge className="mb-6 rounded-full bg-primary/10 text-primary border-primary/20 font-sans text-sm px-4 py-1.5 backdrop-blur-sm">Behind the Build</Badge>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.9]">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-[0.9]">
                 ENGINEERED FOR <span className="gradient-text">PERFECTION</span>
               </h2>
               <p className="text-xl text-muted-foreground font-sans mb-10 leading-relaxed font-light">
@@ -172,9 +172,9 @@ export default function Home() {
 
             <motion.div
               initial={{ opacity: 0, scale: 0.85, rotateY: 15 }} whileInView={{ opacity: 1, scale: 1, rotateY: 0 }} viewport={{ once: true }} transition={{ duration: 1, ease: "easeOut" }}
-              className="lg:w-1/2 w-full perspective-card"
+              className="lg:w-[60%] w-full perspective-card"
             >
-              <div className="rounded-[2.5rem] overflow-hidden glass shadow-[0_30px_100px_rgba(var(--primary),0.2)] relative group transform-gpu transition-transform duration-700 hover:rotate-y-[-2deg] hover:rotate-x-[2deg] border border-white/10" style={{ aspectRatio: "9/16", maxHeight: "700px" }}>
+              <div className="rounded-[2.5rem] overflow-hidden glass shadow-[0_30px_100px_rgba(var(--primary),0.2)] relative group transform-gpu transition-transform duration-700 hover:rotate-y-[-2deg] hover:rotate-x-[2deg] border border-white/10" style={{ aspectRatio: "16/9" }}>
                 <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 transition-opacity duration-700 group-hover:opacity-0" />
                 <video
                   autoPlay loop muted playsInline
@@ -203,7 +203,7 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-indigo-500/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 drop-shadow-xl">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 drop-shadow-xl">
               CRAZY <span className="gradient-text">PC BUILDS</span>
             </h2>
             <p className="text-muted-foreground text-xl font-sans font-light">Get inspired by the most insane custom water-cooled and modded rigs.</p>
@@ -238,7 +238,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-dashed-grid opacity-20 pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 drop-shadow-xl">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 drop-shadow-xl">
               VISUAL <span className="gradient-text">SHOWCASE</span>
             </h2>
             <p className="text-xl text-muted-foreground font-sans font-light">A curated collection of premium hardware.</p>
@@ -284,7 +284,7 @@ export default function Home() {
       <section className="py-32 relative bg-card/20 border-t border-white/5">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 drop-shadow-xl">WHAT <span className="gradient-text">GAMERS</span> SAY</h2>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 drop-shadow-xl">WHAT <span className="gradient-text">GAMERS</span> SAY</h2>
             <div className="flex items-center justify-center gap-4 mb-4">
               <span className="text-5xl font-black text-foreground font-heading">4.9</span>
               <div className="flex">
@@ -335,7 +335,7 @@ export default function Home() {
           className="container relative z-10 mx-auto px-4 text-center max-w-3xl glass p-16 md:p-20 rounded-[3rem] shadow-[0_40px_100px_rgba(var(--primary),0.15)] border border-white/10"
         >
           <Badge className="mb-8 rounded-full bg-primary/15 text-primary border-primary/30 font-sans text-sm px-5 py-2 backdrop-blur-md">Join the Elite</Badge>
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 drop-shadow-xl">UNLOCK <span className="gradient-text">REWARDS</span></h2>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 drop-shadow-xl">UNLOCK <span className="gradient-text">REWARDS</span></h2>
           <p className="text-muted-foreground mb-10 font-sans text-xl font-light leading-relaxed">Exclusive deals, early access to new drops, and expert build guides — delivered straight to your inbox.</p>
           <form className="flex flex-col sm:flex-row gap-4" onSubmit={(e) => e.preventDefault()}>
             <input
