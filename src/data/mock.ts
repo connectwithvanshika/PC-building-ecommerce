@@ -28,6 +28,27 @@ function generateProductsForCategory(category: string, startId: number, count: n
     let images: string[] = [];
     let price = 0;
     
+    const categoryImagePools: Record<string, string[]> = {
+      "Desktops": [
+        "1587202372634-32705e3bf49c", "1593640408182-31c70c8268f5", "1587302912306-cf1ed9ed3314", "1603481582583-0f60de6100b8", "1541807084-5c52b6b3adef"
+      ],
+      "Laptops": [
+        "1603302576837-37561b2e2302", "1531297172864-fd2221044d4e", "1593642632823-8f785ba67e45", "1517336714731-489689fd1ca8", "1525547719571-a2d4ac8945e2"
+      ],
+      "Components": [
+        "1518770660439-4636190af475", "1591488320449-011701bb6704", "1555680202-c86f0e12f086", "1625842268584-8f3296236761", "1541604193435-22287d32c2c2"
+      ],
+      "Peripherals": [
+        "1595225476474-87563907a212", "1615663245857-ac93bb7c39e7", "1527864550417-7fd11b4ad181", "1593640495253-23196b27a87f", "1584727637099-2b6a19f2c6ed"
+      ],
+      "Monitors": [
+        "1527443224154-c4a3942d3acf", "1586210579191-33b45e38fa2c", "1551288049-bebda4e38f71", "1616423640778-28d1b53229bd", "1541560052-77ec8bbc37f7"
+      ],
+      "Storage": [
+        "1628557044797-f21a177c37ec", "1597848212624-a19eb35e2651", "1558864559-ec6c8e006e1c", "1611082531065-cc87c33b7468", "1541807300-34825902bbf9"
+      ]
+    };
+    
     switch (category) {
       case "Desktops":
         name = `${brand} ${descriptor} Desktop PC ${modelNumber}`;
@@ -38,10 +59,6 @@ function generateProductsForCategory(category: string, startId: number, count: n
           "Storage": `${randomItem(["1", "2", "4"])}TB NVMe SSD`,
           "Graphics": `NVIDIA RTX ${randomItem(["4070", "4080", "4090"])}`
         };
-        images = [
-          `https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=800&q=80&random=${startId + i}-1`,
-          `https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=800&q=80&random=${startId + i}-2`
-        ];
         break;
       case "Laptops":
         name = `${brand} ${descriptor} Book ${randomInt(13, 17)} inch`;
@@ -52,10 +69,6 @@ function generateProductsForCategory(category: string, startId: number, count: n
           "Memory": `${randomItem(["16", "32"])}GB LPDDR5`,
           "Weight": `${randomFloat(2.5, 5.5, 1)} lbs`
         };
-        images = [
-          `https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80&random=${startId + i}-1`,
-          `https://images.unsplash.com/photo-1531297172864-fd2221044d4e?w=800&q=80&random=${startId + i}-2`
-        ];
         break;
       case "Components":
         name = `${brand} ${descriptor} ${randomItem(["Motherboard", "Graphics Card", "CPU Cooler"])} ${modelNumber}`;
@@ -66,10 +79,6 @@ function generateProductsForCategory(category: string, startId: number, count: n
           "RGB": randomItem(["Yes", "No"]),
           "Warranty": "3 Years"
         };
-        images = [
-          `https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&random=${startId + i}-1`,
-          `https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&q=80&random=${startId + i}-2`
-        ];
         break;
       case "Peripherals":
         name = `${brand} ${descriptor} ${randomItem(["Mechanical Keyboard", "Wireless Mouse", "Gaming Headset"])}`;
@@ -79,10 +88,6 @@ function generateProductsForCategory(category: string, startId: number, count: n
           "Battery Life": `${randomInt(20, 100)} Hours`,
           "Color": randomItem(["Obsidian Black", "Glacier White", "Mercury Silver"])
         };
-        images = [
-          `https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&q=80&random=${startId + i}-1`,
-          `https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&q=80&random=${startId + i}-2`
-        ];
         break;
       case "Monitors":
         name = `${brand} ${descriptor} ${randomItem(["Gaming", "Creator", "Ultrawide"])} Monitor ${randomInt(24, 49)}"`;
@@ -93,10 +98,6 @@ function generateProductsForCategory(category: string, startId: number, count: n
           "Panel Type": randomItem(["IPS", "VA", "OLED", "Mini-LED"]),
           "Response Time": "1ms"
         };
-        images = [
-          `https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&q=80&random=${startId + i}-1`,
-          `https://images.unsplash.com/photo-1586210579191-33b45e38fa2c?w=800&q=80&random=${startId + i}-2`
-        ];
         break;
       case "Storage":
         name = `${brand} ${descriptor} ${randomItem(["NVMe SSD", "SATA SSD", "External HDD"])} ${randomItem(["1TB", "2TB", "4TB", "8TB"])}`;
@@ -107,12 +108,16 @@ function generateProductsForCategory(category: string, startId: number, count: n
           "Read Speed": `Up to ${randomInt(500, 14000)} MB/s`,
           "Write Speed": `Up to ${randomInt(450, 12000)} MB/s`
         };
-        images = [
-          `https://images.unsplash.com/photo-1628557044797-f21a177c37ec?w=800&q=80&random=${startId + i}-1`,
-          `https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=800&q=80&random=${startId + i}-2`
-        ];
         break;
     }
+    
+    const pool = categoryImagePools[category] || categoryImagePools["Desktops"];
+    const img1 = pool[i % pool.length];
+    const img2 = pool[(i + 1) % pool.length];
+    images = [
+      `https://images.unsplash.com/photo-${img1}?w=800&q=80`,
+      `https://images.unsplash.com/photo-${img2}?w=800&q=80`
+    ];
     
     products.push({
       id: `prod-${category.toLowerCase()}-${startId + i}`,

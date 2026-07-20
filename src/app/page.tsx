@@ -8,6 +8,13 @@ import { getFeaturedProducts, getNewArrivals } from "@/data/mock";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ShieldCheck, Truck, Clock, CreditCard, ArrowRight, Zap, Cpu, Monitor, HardDrive, Mouse, Star, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const categories = [
   { name: "Desktops", icon: Cpu, href: "/category/desktops", color: "from-blue-600/20 to-transparent", img: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?q=80&w=600&auto=format&fit=crop" },
@@ -188,17 +195,14 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="lg:w-1/2 w-full aspect-video rounded-3xl overflow-hidden glass shadow-2xl relative group"
+              className="lg:w-1/2 flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-              <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 transition-opacity duration-500 group-hover:opacity-0" />
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                src="https://cdn.pixabay.com/video/2021/04/23/71987-542125608_large.mp4"
-              />
+              <div className="rounded-3xl overflow-hidden glass shadow-2xl relative group bg-background/50 p-2 flex-shrink-0">
+                <iframe src="https://assets.pinterest.com/ext/embed.html?id=777011742014648298" height="350" width="280" frameBorder="0" scrolling="no" className="rounded-2xl bg-black"></iframe>
+              </div>
+              <div className="rounded-3xl overflow-hidden glass shadow-2xl relative group bg-background/50 p-2 flex-shrink-0 hidden sm:block">
+                <iframe src="https://assets.pinterest.com/ext/embed.html?id=1091911872188205858" height="350" width="280" frameBorder="0" scrolling="no" className="rounded-2xl bg-black"></iframe>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -305,6 +309,48 @@ export default function Home() {
               </span>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Community Build Videos ── */}
+      <section className="py-24 relative overflow-hidden bg-background">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-14">
+            <Badge className="mb-4 rounded-full bg-primary/10 text-primary border-primary/20 font-sans text-sm">#MasterBuilds</Badge>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">CRAZY <span className="gradient-text">PC BUILDS</span></h2>
+            <p className="text-muted-foreground text-lg font-sans">Get inspired by the most insane custom water-cooled and modded rigs.</p>
+          </div>
+          
+          <Carousel
+            opts={{ align: "start", loop: true }}
+            className="w-full max-w-6xl mx-auto"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {[
+                "315322411429717557",
+                "25121710419082745",
+                "346988346310981452",
+                "238901955228785761",
+                "891220213787560089",
+                "25192079162794341"
+              ].map((id, index) => (
+                <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 flex justify-center">
+                  <div className="p-2 glass rounded-3xl overflow-hidden bg-card/50 flex flex-col items-center">
+                    <iframe 
+                      src={`https://assets.pinterest.com/ext/embed.html?id=${id}`} 
+                      height="500" 
+                      width="260" 
+                      frameBorder="0" 
+                      scrolling="no"
+                      className="rounded-2xl"
+                    ></iframe>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex -left-12 bg-background border-primary/20 text-primary hover:bg-primary hover:text-white" />
+            <CarouselNext className="hidden md:flex -right-12 bg-background border-primary/20 text-primary hover:bg-primary hover:text-white" />
+          </Carousel>
         </div>
       </section>
 
