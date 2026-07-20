@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/carousel";
 import { FallingStars } from "@/components/ui/FallingStars";
 import { FloatingGamepad } from "@/components/ui/FloatingGamepad";
+import { FloatingProcessor } from "@/components/ui/FloatingProcessor";
+import { LightBeams } from "@/components/ui/LightBeams";
 import { useRef } from "react";
 
 const categories = [
@@ -71,6 +73,7 @@ export default function Home() {
       {/* Global Ambient Background Effects */}
       <FallingStars count={40} />
       <FloatingGamepad />
+      <FloatingProcessor />
       
       {/* Fixed Ambient Orbs */}
       <div className="fixed top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[120px] mix-blend-screen pointer-events-none z-[-1]" />
@@ -187,16 +190,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Immersive Video Divider ── */}
-      <section className="relative w-full h-[40vh] min-h-[300px] overflow-hidden group">
-        <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 group-hover:opacity-0 transition-opacity duration-700" />
-        <video
-          autoPlay loop muted playsInline
-          className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000"
-          src="/arrow.mp4"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background z-20 pointer-events-none" />
-      </section>
+      {/* ── Immersive Light Beams Divider ── */}
+      <LightBeams />
 
       {/* ── Massive Carousel (Crazy PC Builds) ── */}
       <section className="py-32 relative overflow-hidden bg-background">

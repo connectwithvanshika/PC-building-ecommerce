@@ -44,12 +44,20 @@ export function FloatingGamepad() {
     [0, 0, 50, 50]
   );
   
+  // Fade out at the absolute bottom so it doesn't hide footer content permanently
+  const opacityPath = useTransform(
+    scrollYProgress,
+    [0, 0.9, 0.95, 0.98, 1],
+    [1, 1, 1, 0, 0]
+  );
+  
   // Apply spring physics for buttery smooth transitions
   const smoothY = useSpring(yPath, { stiffness: 30, damping: 20 });
   const smoothX = useSpring(xPath, { stiffness: 30, damping: 20 });
   const smoothRotate = useSpring(rotatePath, { stiffness: 40, damping: 25 });
   const smoothScale = useSpring(scalePath, { stiffness: 40, damping: 20 });
   const smoothZIndex = useSpring(zIndexPath, { stiffness: 1000, damping: 100 }); // Fast jump
+  const smoothOpacity = useSpring(opacityPath, { stiffness: 40, damping: 20 });
 
   // Mouse-based 3D Parallax effect (idle breathing)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -72,7 +80,7 @@ export function FloatingGamepad() {
   return (
     <motion.div 
       className="fixed inset-0 pointer-events-none overflow-visible flex items-center justify-center"
-      style={{ zIndex: smoothZIndex }}
+      style={{ zIndex: smoothZIndex, opacity: smoothOpacity }}
       aria-hidden="true"
     >
       <motion.div
