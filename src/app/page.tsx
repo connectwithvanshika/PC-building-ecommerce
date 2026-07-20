@@ -1,10 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Badge } from "@/components/ui/badge";
 import { getFeaturedProducts, getNewArrivals } from "@/data/mock";
 import { ProductCard } from "@/components/product/ProductCard";
-import { ShieldCheck, Truck, Clock, CreditCard, ArrowRight, Zap, Cpu, Monitor, HardDrive, Mouse, Wifi } from "lucide-react";
+import { ShieldCheck, Truck, Clock, CreditCard, ArrowRight, Zap, Cpu, Monitor, HardDrive, Mouse, Star, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const categories = [
   { name: "Desktops", icon: Cpu, href: "/category/desktops", color: "from-blue-600/20 to-transparent", img: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?q=80&w=600&auto=format&fit=crop" },
@@ -17,60 +20,97 @@ const categories = [
 
 const brands = ["NVIDIA", "Intel", "AMD", "Samsung", "Corsair", "Razer", "ASUS", "Logitech"];
 
+const reviews = [
+  { name: "Alex Johnson", text: "Insane build quality. The PC arrived faster than expected and handles 4K gaming like a breeze. Highly recommended!", rating: 5, date: "2 weeks ago" },
+  { name: "Sarah Miller", text: "Customer service is top-notch. They helped me pick the perfect components for my rendering rig. Aesthetic and powerful.", rating: 5, date: "1 month ago" },
+  { name: "David Chen", text: "Best tech store hands down. Prices are competitive and the shipping was incredibly secure. Will buy again.", rating: 5, date: "3 weeks ago" },
+];
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 100, damping: 20 } }
+};
+
 export default function Home() {
   const featured = getFeaturedProducts();
   const newArrivals = getNewArrivals();
 
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className="flex flex-col overflow-hidden bg-background">
       {/* ── Hero ── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-zinc-950">
-        {/* Background gradient mesh */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2" />
-          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] translate-y-1/2" />
-          <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] bg-indigo-900/20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-dashed-grid bg-background">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0 overflow-hidden opacity-30 mix-blend-screen dark:mix-blend-lighten pointer-events-none">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover scale-105"
+            src="https://cdn.pixabay.com/video/2021/08/04/83864-584705353_large.mp4"
+          />
         </div>
         
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        {/* Background gradients */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-secondary/20 rounded-full blur-[100px] translate-y-1/2" />
+        </div>
+        
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-0" />
 
-        <div className="container relative z-10 px-4 text-center max-w-5xl mx-auto">
-          <Badge className="mb-6 text-sm px-4 py-1.5 rounded-full bg-primary/10 text-primary border-primary/20 font-medium">
-            <Zap className="mr-1.5 h-3.5 w-3.5" /> New Arrivals Just Dropped
-          </Badge>
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 text-white leading-[0.95]">
+        <motion.div 
+          initial="hidden"
+          animate="show"
+          variants={staggerContainer}
+          className="container relative z-10 px-4 text-center max-w-5xl mx-auto pt-20"
+        >
+          <motion.div variants={fadeUp}>
+            <Badge className="mb-6 text-sm px-4 py-1.5 rounded-full bg-primary/10 text-primary border-primary/20 font-medium">
+              <Zap className="mr-1.5 h-3.5 w-3.5" /> New Arrivals Just Dropped
+            </Badge>
+          </motion.div>
+          <motion.h1 variants={fadeUp} className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.95]">
             BUILD YOUR{" "}
             <span className="gradient-text">ULTIMATE</span>{" "}
             MACHINE
-          </h1>
-          <p className="text-lg md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          </motion.h1>
+          <motion.p variants={fadeUp} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed font-sans">
             Premium hardware for creators, gamers, and professionals who refuse to compromise on performance.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <ButtonLink href="/category/desktops" size="lg" className="text-base px-8 h-12 rounded-full font-bold glow">
+          </motion.p>
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <ButtonLink href="/category/desktops" size="lg" className="text-base px-8 h-12 rounded-full font-bold glow bg-primary text-primary-foreground hover:bg-primary/90">
               Shop Custom PCs
             </ButtonLink>
-            <ButtonLink href="/category/all" variant="outline" size="lg" className="text-base px-8 h-12 rounded-full border-zinc-700 hover:bg-zinc-800">
+            <ButtonLink href="/category/all" variant="outline" size="lg" className="text-base px-8 h-12 rounded-full border-border hover:bg-muted">
               Explore All <ArrowRight className="ml-2 h-4 w-4 inline" />
             </ButtonLink>
-          </div>
-          <div className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto">
+          </motion.div>
+          
+          <motion.div variants={fadeUp} className="mt-20 grid grid-cols-3 gap-8 max-w-lg mx-auto glass rounded-3xl p-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-dashed-grid opacity-20" />
             {[["50K+", "Happy Customers"], ["10K+", "Products Shipped"], ["9.8/10", "Satisfaction"]].map(([num, label]) => (
-              <div key={label} className="text-center">
-                <div className="text-2xl font-black text-white mb-1">{num}</div>
-                <div className="text-xs text-zinc-500">{label}</div>
+              <div key={label} className="text-center relative z-10">
+                <div className="text-2xl font-black gradient-text mb-1">{num}</div>
+                <div className="text-xs text-muted-foreground font-medium">{label}</div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── Trust Badges ── */}
-      <section className="py-10 border-b bg-card/50">
+      <section className="py-10 border-b bg-card/30 relative">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -84,8 +124,8 @@ export default function Home() {
                   <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-sm">{title}</div>
-                  <div className="text-xs text-muted-foreground">{sub}</div>
+                  <div className="font-semibold text-sm font-heading">{title}</div>
+                  <div className="text-xs text-muted-foreground font-sans">{sub}</div>
                 </div>
               </div>
             ))}
@@ -94,18 +134,27 @@ export default function Home() {
       </section>
 
       {/* ── Featured Products ── */}
-      <section className="py-24">
-        <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <Badge variant="outline" className="mb-3 text-primary border-primary/30 rounded-full">Editor&apos;s Choice</Badge>
-              <h2 className="text-4xl font-black tracking-tighter">FEATURED <span className="gradient-text">HARDWARE</span></h2>
-              <p className="text-muted-foreground mt-2">Handpicked for maximum performance.</p>
-            </div>
-            <Link href="/category/all" className="hidden sm:flex items-center gap-1 text-primary font-medium hover:underline text-sm">
-              View All <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 pointer-events-none" />
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="flex items-end justify-between mb-12"
+          >
+            <motion.div variants={fadeUp}>
+              <Badge variant="outline" className="mb-3 text-primary border-primary/30 rounded-full bg-primary/5 font-sans">Editor&apos;s Choice</Badge>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter">FEATURED <span className="gradient-text">HARDWARE</span></h2>
+              <p className="text-muted-foreground mt-2 font-sans text-lg">Handpicked for maximum performance.</p>
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <Link href="/category/all" className="hidden sm:flex items-center gap-1 text-primary font-medium hover:underline text-sm font-sans">
+                View All <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </motion.div>
+          </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featured.map(product => (
               <ProductCard key={product.id} product={product} />
@@ -114,45 +163,132 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Shop by Category ── */}
-      <section className="py-24 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-black tracking-tighter mb-3">SHOP BY <span className="gradient-text">CATEGORY</span></h2>
-            <p className="text-muted-foreground">Everything you need, all in one place.</p>
+      {/* ── Showcase Video Section ── */}
+      <section className="py-24 relative bg-dashed-grid border-y">
+        <div className="absolute inset-0 bg-background/90" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col lg:flex-row gap-12 items-center">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/2"
+            >
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-6">ENGINEERED FOR <span className="gradient-text">PERFECTION</span></h2>
+              <p className="text-lg text-muted-foreground font-sans mb-8 leading-relaxed">
+                Watch our expert builders assemble the most powerful rigs on the planet. From custom water loops to impeccable cable management, we treat every build as a masterpiece.
+              </p>
+              <ButtonLink href="/about" className="rounded-full px-8 h-12 glow font-bold text-base">
+                Discover Our Process
+              </ButtonLink>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/2 w-full aspect-video rounded-3xl overflow-hidden glass shadow-2xl relative group"
+            >
+              <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 transition-opacity duration-500 group-hover:opacity-0" />
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="https://cdn.pixabay.com/video/2021/04/23/71987-542125608_large.mp4"
+              />
+            </motion.div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {categories.map((cat) => (
-              <Link key={cat.name} href={cat.href} className="group relative h-44 md:h-52 rounded-2xl overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                  style={{ backgroundImage: `url('${cat.img}')` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                <div className="absolute bottom-4 left-5">
-                  <h3 className="text-xl font-black text-white mb-1">{cat.name}</h3>
-                  <span className="text-xs text-white/70 group-hover:text-primary transition-colors">Explore →</span>
-                </div>
-              </Link>
+        </div>
+      </section>
+
+      {/* ── Shop by Category ── */}
+      <section className="py-24 bg-card/30 relative">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-3">SHOP BY <span className="gradient-text">CATEGORY</span></h2>
+            <p className="text-muted-foreground text-lg font-sans">Everything you need, all in one place.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
+            {categories.map((cat, i) => (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                key={cat.name}
+              >
+                <Link href={cat.href} className="group relative h-48 md:h-64 rounded-3xl overflow-hidden block">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                    style={{ backgroundImage: `url('${cat.img}')` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div className="absolute bottom-6 left-6">
+                    <h3 className="text-2xl font-black text-white mb-2 tracking-tight drop-shadow-md">{cat.name}</h3>
+                    <span className="text-sm font-sans font-semibold text-white/80 group-hover:text-primary transition-colors flex items-center gap-1">
+                      Explore <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── New Arrivals ── */}
-      <section className="py-24">
-        <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <Badge variant="outline" className="mb-3 text-blue-400 border-blue-400/30 rounded-full">Just Dropped</Badge>
-              <h2 className="text-4xl font-black tracking-tighter">NEW <span className="gradient-text">ARRIVALS</span></h2>
-              <p className="text-muted-foreground mt-2">The latest tech, fresh off the line.</p>
+      {/* ── Google Reviews ── */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-dashed-grid opacity-30" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">WHAT <span className="gradient-text">GAMERS</span> SAY</h2>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-3xl font-black text-foreground font-sans">4.9</span>
+              <div className="flex">
+                {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />)}
+              </div>
             </div>
+            <p className="text-muted-foreground font-sans">Based on 10,000+ Google Reviews</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newArrivals.map(product => (
-              <ProductCard key={product.id} product={product} />
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {reviews.map((review, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-card p-6 rounded-3xl border shadow-sm relative"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center font-black text-primary text-xl">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-foreground font-sans flex items-center gap-1">
+                      {review.name}
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    </h4>
+                    <span className="text-xs text-muted-foreground">{review.date}</span>
+                  </div>
+                </div>
+                <div className="flex mb-3">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-muted-foreground font-sans text-sm leading-relaxed">"{review.text}"</p>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -161,10 +297,10 @@ export default function Home() {
       {/* ── Brand Strip ── */}
       <section className="py-16 border-y bg-card/30">
         <div className="container mx-auto px-4">
-          <p className="text-center text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-10">Trusted Brands</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+          <p className="text-center text-xs uppercase tracking-widest text-muted-foreground font-bold mb-10 font-sans">Trusted Partners</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
             {brands.map(brand => (
-              <span key={brand} className="text-xl font-black text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors cursor-default tracking-tight">
+              <span key={brand} className="text-xl md:text-2xl font-black text-muted-foreground/30 hover:text-primary transition-colors cursor-default tracking-tight">
                 {brand}
               </span>
             ))}
@@ -173,24 +309,29 @@ export default function Home() {
       </section>
 
       {/* ── Newsletter ── */}
-      <section className="py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px]" />
-        <div className="container relative z-10 mx-auto px-4 text-center max-w-xl">
-          <Badge className="mb-4 rounded-full bg-primary/10 text-primary border-primary/20">Get Early Access</Badge>
-          <h2 className="text-4xl font-black tracking-tighter mb-4">JOIN THE NEXUS</h2>
-          <p className="text-muted-foreground mb-8">Exclusive deals, early access to new drops, and expert build guides — delivered to your inbox.</p>
-          <form className="flex flex-col sm:flex-row gap-2">
+      <section className="py-28 relative overflow-hidden bg-dashed-grid">
+        <div className="absolute inset-0 bg-background/80" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px]" />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="container relative z-10 mx-auto px-4 text-center max-w-xl glass p-12 rounded-3xl"
+        >
+          <Badge className="mb-6 rounded-full bg-primary/10 text-primary border-primary/20 font-sans text-sm">Join the Community</Badge>
+          <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">UNLOCK <span className="gradient-text">REWARDS</span></h2>
+          <p className="text-muted-foreground mb-8 font-sans text-lg">Exclusive deals, early access to new drops, and expert build guides — delivered to your inbox.</p>
+          <form className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"
-              placeholder="your@email.com"
-              className="flex-1 px-4 py-3 rounded-full text-foreground bg-background/80 backdrop-blur outline-none focus:ring-2 focus:ring-primary border border-border text-sm"
+              placeholder="Enter your email address"
+              className="flex-1 px-6 py-4 rounded-full text-foreground bg-background/80 outline-none focus:ring-2 focus:ring-primary border border-border text-sm font-sans shadow-inner"
               required
             />
-            <Button type="submit" className="rounded-full px-6 font-bold">Subscribe</Button>
+            <Button type="submit" className="rounded-full px-8 h-[54px] font-bold text-base glow">Subscribe</Button>
           </form>
-          <p className="text-xs text-muted-foreground mt-4">No spam. Unsubscribe anytime.</p>
-        </div>
+          <p className="text-xs text-muted-foreground mt-4 font-sans">No spam. Unsubscribe anytime.</p>
+        </motion.div>
       </section>
     </div>
   );

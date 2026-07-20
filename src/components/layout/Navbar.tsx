@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { products } from "@/data/mock";
 import { Product } from "@/types";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const categories = [
   { name: "Desktops", href: "/category/desktops" },
@@ -118,6 +119,9 @@ export function Navbar() {
                 <User className="h-5 w-5" />
               </Button>
             </Link>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Mobile Menu */}
             <Sheet>
