@@ -71,9 +71,11 @@ export default function Home() {
   return (
     <div ref={containerRef} className="flex flex-col overflow-hidden bg-background relative selection:bg-primary/20">
       {/* Global Ambient Background Effects */}
-      <FallingStars count={40} />
-      <FloatingGamepad />
-      <FloatingProcessor />
+      <div className="hidden md:block">
+        <FallingStars count={40} />
+        <FloatingGamepad />
+        <FloatingProcessor />
+      </div>
       
       {/* Fixed Ambient Orbs */}
       <div className="fixed top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[120px] mix-blend-screen pointer-events-none z-[-1]" />
@@ -82,7 +84,7 @@ export default function Home() {
       {/* ── Hero ── */}
       <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
         {/* Parallax Background Video */}
-        <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 overflow-hidden opacity-20 dark:opacity-30 mix-blend-multiply dark:mix-blend-screen pointer-events-none">
+        <motion.div style={{ y: bgY }} className="hidden md:block absolute inset-0 z-0 overflow-hidden opacity-20 dark:opacity-30 mix-blend-multiply dark:mix-blend-screen pointer-events-none">
           <video autoPlay loop muted playsInline className="w-full h-full object-cover scale-110"
             src="https://cdn.pixabay.com/video/2021/08/04/83864-584705353_large.mp4"
           />
@@ -102,7 +104,7 @@ export default function Home() {
 
           <motion.h1 variants={fadeUp} className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
             BUILD YOUR <br/>
-            <span className="gradient-text glow text-transparent bg-clip-text">ULTIMATE</span> <br/>
+            <span className="gradient-text text-transparent bg-clip-text">ULTIMATE</span> <br/>
             MACHINE
           </motion.h1>
 
@@ -191,10 +193,12 @@ export default function Home() {
       </section>
 
       {/* ── Immersive Light Beams Divider ── */}
-      <LightBeams />
+      <div className="hidden md:block">
+        <LightBeams />
+      </div>
 
       {/* ── Massive Carousel (Crazy PC Builds) ── */}
-      <section className="py-32 relative overflow-hidden bg-background">
+      <section className="hidden md:block py-32 relative overflow-hidden bg-background">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-indigo-500/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">

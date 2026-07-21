@@ -63,15 +63,25 @@ export function FloatingGamepad() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
+    // Disable mouse tracking on mobile to save performance
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    
+    let animationFrameId: number;
     const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth) * 2 - 1;
-      const y = (e.clientY / innerHeight) * 2 - 1;
-      setMousePosition({ x, y });
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(() => {
+        const { innerWidth, innerHeight } = window;
+        const x = (e.clientX / innerWidth) * 2 - 1;
+        const y = (e.clientY / innerHeight) * 2 - 1;
+        setMousePosition({ x, y });
+      });
     };
     
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   const mouseXBase = mousePosition.x * 20;
@@ -93,17 +103,18 @@ export function FloatingGamepad() {
           transformPerspective: 1200,
           rotateX: mousePosition.y * -15,
           rotateY: mousePosition.x * 15,
+          willChange: "transform",
         }}
-        className="relative w-[500px] h-[350px] transition-transform duration-200 ease-out"
+        className="relative w-[300px] h-[210px] md:w-[500px] md:h-[350px] transition-transform duration-200 ease-out"
       >
         {/* Dynamic glow that gets intensely brighter at the footer */}
         <motion.div 
-          style={{ opacity: useTransform(scrollYProgress, [0, 0.9, 1], [0.5, 0.5, 1]) }}
-          className="absolute inset-0 bg-primary/40 rounded-full blur-[80px] scale-90 mix-blend-screen animate-pulse" 
+          style={{ opacity: useTransform(scrollYProgress, [0, 0.9, 1], [0.5, 0.5, 1]), willChange: "opacity" }}
+          className="absolute inset-0 bg-primary/40 rounded-full blur-[40px] md:blur-[80px] scale-90 md:mix-blend-screen animate-pulse" 
         />
         <motion.div 
-          style={{ opacity: useTransform(scrollYProgress, [0, 0.9, 1], [0.3, 0.3, 0.8]) }}
-          className="absolute inset-0 bg-indigo-500/50 rounded-full blur-[100px] scale-110 mix-blend-screen" 
+          style={{ opacity: useTransform(scrollYProgress, [0, 0.9, 1], [0.3, 0.3, 0.8]), willChange: "opacity" }}
+          className="absolute inset-0 bg-indigo-500/50 rounded-full blur-[50px] md:blur-[100px] scale-110 md:mix-blend-screen" 
         />
 
         <svg
@@ -189,14 +200,16 @@ export function FloatingGamepad() {
 
           {/* TOP LAYER: 3D Joysticks */}
           <g style={{ transform: `translate(${mouseXBase * 0.7}px, ${mouseYBase * 0.7}px)` }}>
+            {/* Left Joystick */}
             <g transform="translate(130, 200)">
-              <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" filter="url(#insetShadow)" />
+              <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" className="md:filter-url(#insetShadow)" />
               <circle cx="-4" cy="-4" r="24" fill="oklch(0.20 0.05 270)" />
               <circle cx="-8" cy="-8" r="15" fill="oklch(0.25 0.05 270)" />
               <path d="M-15 -15 A 12 12 0 0 1 -5 -20" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3" fill="none" />
             </g>
+            {/* Right Joystick */}
             <g transform="translate(270, 200)">
-              <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" filter="url(#insetShadow)" />
+              <circle cx="0" cy="0" r="28" fill="oklch(0.08 0.02 270)" className="md:filter-url(#insetShadow)" />
               <circle cx="-4" cy="-4" r="24" fill="oklch(0.20 0.05 270)" />
               <circle cx="-8" cy="-8" r="15" fill="oklch(0.25 0.05 270)" />
               <path d="M-15 -15 A 12 12 0 0 1 -5 -20" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.3" fill="none" />
