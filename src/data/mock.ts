@@ -3,16 +3,22 @@ import { Product } from "@/types";
 const brands = ["NVIDIA", "Intel", "AMD", "Samsung", "Corsair", "Razer", "ASUS", "Logitech", "WD", "Seagate", "MSI", "Gigabyte"];
 const descriptors = ["Pro", "Elite", "Ultra", "Max", "Extreme", "X", "Plus", "Gaming", "Creator", "Series 9"];
 
+let seed = 12345;
+function random() {
+  const x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
 function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(random() * (max - min + 1)) + min;
 }
 
 function randomFloat(min: number, max: number, decimals: number = 2) {
-  return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+  return parseFloat((random() * (max - min) + min).toFixed(decimals));
 }
 
 function randomItem<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+  return arr[Math.floor(random() * arr.length)];
 }
 
 function generateProductsForCategory(category: string, startId: number, count: number = 20): Product[] {
@@ -125,13 +131,13 @@ function generateProductsForCategory(category: string, startId: number, count: n
       brand,
       category,
       price,
-      originalPrice: Math.random() > 0.7 ? price + randomInt(50, 300) : undefined,
+      originalPrice: random() > 0.7 ? price + randomInt(50, 300) : undefined,
       description: `Experience uncompromising performance with the ${name}. Engineered for the most demanding workloads and powered by the latest innovations from ${brand}, this ${category.toLowerCase()} delivers exceptional reliability, speed, and efficiency.`,
       specs,
       images,
       rating: randomFloat(3.5, 5.0, 1),
       reviews: randomInt(12, 1450),
-      inStock: Math.random() > 0.1,
+      inStock: random() > 0.1,
       featured: i < 2, // First 2 of each category are featured
       newArrival: i >= 2 && i < 4 // 3rd and 4th are new arrivals
     });
