@@ -2,8 +2,6 @@
 
 A production-grade, fully responsive e-commerce website for a tech hardware store. Built with Next.js 15 App Router, TypeScript, Tailwind CSS v4, and shadcn/ui.
 
-![NexusTech Screenshot](https://images.unsplash.com/photo-1542393545-10f5cde2c810?q=80&w=1200&auto=format&fit=crop)
-
 ## ✨ Features
 
 - 🏠 **Home Page** — Hero with gradient mesh, featured products, category grid, brand strip, newsletter
